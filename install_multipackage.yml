@@ -1,0 +1,24 @@
+---
+- hosts: webservers
+  become: true
+  tasks:
+  - name: Install packages on Redhat family
+    when: ansible_os_family == "Redhat"
+    yum: name="{{item}}" state=present
+    with_items:
+    - vim
+    - zip
+    - curl
+    - nginx
+    - wget
+
+  - name: Install packages on Debain family
+    when: ansible_os_family == "Debain"
+    apt: name="{{item}}" state=present
+    with_items:
+    - vim
+    - zip
+    - curl
+    - nginx
+    - unzip
+   
