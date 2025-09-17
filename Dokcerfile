@@ -1,20 +1,39 @@
-# Use the official Ubuntu as a parent image
+# Use the official Ubuntu as a parent image - aka Base image
 FROM ubuntu:20.04
 
+# Maintainer info (optional, but good practice). It is Author/Owner or description of your image
+MAINTAINER ="yourname@example.com"
+
+# RUN - RUN cmd is used to run any shell cmds and these cmds will run on top of your base image. 
+# RUN cmd will execute during the build time of your image.
 # Update the package list and install Nginx
 RUN apt-get update && apt-get install -y nginx
 
 # Remove the default Nginx index.html file
 RUN rm -f /var/www/html/index.nginx-debian.html
 
-# Copy custom static files or configuration (optional)
-# COPY ./index.html /var/www/html/
+# WORKDIR - similar as cd cmd. If you mention any path after WORDIR the shell will be changed into directory
+#Set working directory inside container
+WORKDIR /app
 
-# Expose port 80 to allow web traffic
+# Copy - It will copy files and directories from host m/c to the container 
+# custom static files or configuration (optional)
+COPY ./index.html /var/www/html/
+
+# Set environment variable
+ENV APP_ENV=production
+
+# Expose is to expose the port of the container, like port 80 to allow web traffic
 EXPOSE 80
 
-# Start Nginx in the foreground
+# Start Nginx in the foreground. Default command to run when container starts
+# The CMD cmd doesn't execute during the build time. It will execute after creation of the container. 
+# There can be only one cmd in Dockerfile. If you mention multiple CMD cmds then last one will be executed.
 CMD ["nginx", "-g", "daemon off;"]
+
+# ENTRYPOINT - The first cmd that will execute in the container is ENTRYPOINT. The ENTRYPOINT will execute before cmd CMD. 
+# When you want your container to be executable use ENTRYPOINT.
+ENTRYPOINT ["installation.sh"]
 
 
 
